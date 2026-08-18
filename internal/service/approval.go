@@ -69,9 +69,8 @@ func (s *ApprovalService) ResolveApprovalTask(ctx context.Context, approval_task
 		if err != nil {
 			return err
 		}
-		operations := principal.Can(domain.RoleMLEngineer)
-		if !approval_task.CanResolve(principal.UserID, operations) {
-			return domain.ConflictError{Resource: "approval_task", Reason: "only the assigned reviewer may resolve it"}
+		if approval_task.ReviewerID != principal.UserID && !principal.Can(domain.RoleMLEngineer) {
+			return domain.ConflictError{Resource: "approval_task", Reason: "only the receiving custodian may resolve it"}
 		}
 		status := domain.ApprovalTaskRejected
 		if accepted {

@@ -35,16 +35,6 @@ type ApprovalTask struct {
 	Version        int64              `json:"version"`
 }
 
-func (h ApprovalTask) CanResolve(principalID string, operations bool) bool {
-	if operations {
-		return true
-	}
-	if strings.TrimSpace(principalID) == "" {
-		return false
-	}
-	return h.RequesterID == principalID
-}
-
 func (h ApprovalTask) Validate() error {
 	if strings.TrimSpace(h.InferenceRunID) == "" || strings.TrimSpace(h.RequesterID) == "" || strings.TrimSpace(h.ReviewerID) == "" {
 		return FieldError{Field: "approval_task", Message: "run, requester and reviewer are required"}
